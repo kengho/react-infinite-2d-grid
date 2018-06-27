@@ -3,16 +3,16 @@ import React, { Component } from 'react';
 import divideLinesByVisibility from './divideLinesByVisibility';
 
 const propTypes = {
+  // TODO: this.
 };
 
 const defaultProps = {
-  spacing: 0,
   hasHeader: false,
   headerHeight: 0,
   headerWidth: 0,
 };
 
-// TODO: check that defaultCellHeight, defaultCellWidth, spacing,
+// TODO: check that defaultCellHeight, defaultCellWidth,
 //   gridRoundingLength are numbers, not strings.
 
 // Table don't rerenders after non-scroll actions with PureComponent Grid.
@@ -48,7 +48,6 @@ class Grid extends Component {
       screenWidth,
       defaultCellHeight,
       defaultCellWidth,
-      spacing,
       gridRoundingLength,
       cellRenderer,
       rowRenderer,
@@ -74,7 +73,6 @@ class Grid extends Component {
       scrollSize: scrollTop,
       screenSize: screenHeight - headerHeight,
       defaultLineSize: defaultCellHeight,
-      gapSize: spacing,
       gridRoundingLength,
     });
     const {
@@ -88,7 +86,6 @@ class Grid extends Component {
       scrollSize: scrollLeft,
       screenSize: screenWidth - headerWidth,
       defaultLineSize: defaultCellWidth,
-      gapSize: spacing,
       gridRoundingLength,
     });
     const {
@@ -145,7 +142,7 @@ class Grid extends Component {
       renderingRowsWrapper.push(
         <div
           key="columns-before"
-          style={{ minWidth: columnsBeforeSize }}
+          style={{ width: columnsBeforeSize }}
         />
       );
 
@@ -154,7 +151,7 @@ class Grid extends Component {
           <div
             key={`column-header-before`}
             style={{
-              minWidth: columnsBeforeSize,
+              width: columnsBeforeSize,
               height: headerHeight,
             }}
           />
@@ -224,22 +221,14 @@ class Grid extends Component {
         // Separating columns.
         const realColumnIndex = unionColumnIndex;
         const compColumnIndex = unionColumnIndex - columnsNumber;
-
         const columnSize = columnsSizes(realColumnIndex) || defaultCellWidth;
-
-        const cellIsReal = (compRowIndex < 0 && compColumnIndex < 0);
         const cellStyle = {
-          display: 'table-cell',
-
-          // Can't be moved up in DOM until we use inline styles and they don't going down the DOM.
-          boxSizing: 'border-box',
+          // TODO: figure out, why minWidth doesn't required here.
+          width: columnSize,
+          height: rowSize,
         };
         const cellIsOnTopRow = (unionRowIndex === rowsUnion.begin);
-        if (cellIsOnTopRow) {
-          // Making use of table layout: only fist row's
-          //   cells should 'know' about columns size.
-          cellStyle.minWidth = columnSize;
-        }
+        const cellIsReal = (compRowIndex < 0 && compColumnIndex < 0);
         const cell = cellRenderer({
           rowIndex: realRowIndex,
           columnIndex: realColumnIndex,
@@ -253,10 +242,9 @@ class Grid extends Component {
         if (hasHeader && cellIsOnTopRow) {
           const columnHeader = columnHeaderRenderer({
             style: {
+              // minWidth required instead of width because of flex layout.
               minWidth: columnSize,
               height: headerHeight,
-              margin: spacing > 0 && `0 0 ${spacing}px ${spacing}px`,
-              display: 'table-cell',
             },
             index: unionColumnIndex,
             isReal: cellIsReal,
@@ -268,7 +256,8 @@ class Grid extends Component {
       const rowIsReal = (compRowIndex < 0);
       const rowStyle = {
         height: rowSize,
-        display: 'table-row',
+        display: 'flex',
+        flexDirection: 'row',
       };
       const renderingRow = rowRenderer({
         index: realRowIndex,
@@ -284,7 +273,6 @@ class Grid extends Component {
           style: {
             width: headerWidth,
             height: rowSize,
-            margin: spacing > 0 && `${spacing}px ${spacing}px 0 0`,
           },
           index: unionRowIndex,
           isReal: rowIsReal,
@@ -296,11 +284,7 @@ class Grid extends Component {
     renderingRowsWrapper.push(
       <div
         key="cells"
-        style={{
-          display: 'table',
-          borderSpacing: `${spacing}px`,
-          tableLayout: 'fixed',
-        }}
+        style={{ tableLayout: 'fixed' }}
       >
         {renderingRows}
       </div>
@@ -310,7 +294,7 @@ class Grid extends Component {
       renderingRowsWrapper.push(
         <div
           key="columns-after"
-          style={{ minWidth: realColumns.after.size }}
+          style={{ width: realColumns.after.size }}
         />
       );
     }
@@ -319,7 +303,7 @@ class Grid extends Component {
       renderingRowsWrapper.push(
         <div
           key="extra-columns-after"
-          style={{ minWidth: extraWidth }}
+          style={{ width: extraWidth }}
         />
       );
     }
@@ -369,7 +353,7 @@ class Grid extends Component {
           left: '0',
           zIndex: '1000',
           height: `${headerHeight}px`,
-          minWidth: `${headerWidth}px`,
+          width: `${headerWidth}px`,
         },
       });
 
@@ -381,7 +365,7 @@ class Grid extends Component {
             left: '0',
             height: '0',
             zIndex: '900',
-            minWidth: `${scrollLeft + screenWidth}px`, // so headers never reach bottom of the it's contaiver
+            width: `${scrollLeft + screenWidth}px`, // so headers never reach bottom of the it's contaiver
           }}
         >
           <div
