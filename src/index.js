@@ -321,7 +321,7 @@ class Grid extends Component {
       renderingRowsWrapper.push(
         <div
           key="columns-after"
-          style={{ width: realColumns.after.size }}
+          style={{ minWidth: realColumns.after.size }}
         />
       );
     }
@@ -330,7 +330,7 @@ class Grid extends Component {
       renderingRowsWrapper.push(
         <div
           key="extra-columns-after"
-          style={{ width: extraWidth }}
+          style={{ minWidth: extraWidth }}
         />
       );
     }
