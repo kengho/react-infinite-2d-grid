@@ -204,30 +204,30 @@ class Demo extends Component {
   render() {
     return (
       <Grid
-        scrollTop={this.state.scroll.top}
-        scrollLeft={this.state.scroll.left}
-        screenHeight={this.state.screen.height}
-        screenWidth={this.state.screen.width}
-        rowsSizes={(i) => this.rows[i] ? this.rows[i].size : undefined}
-        rowsNumber={this.rows.length}
-        columnsSizes={(i) => this.columns[i] ? this.columns[i].size : undefined}
+        cellRenderer={this.cellRenderer}
+        columnHeaderRenderer={this.columnHeaderRenderer}
         columnsNumber={this.columns.length}
+        columnsSizes={(i) => this.columns[i] ? this.columns[i].size : undefined}
         defaultCellHeight={50}
         defaultCellWidth={90}
-        spacing={2}
-        gridRoundingLength={5}
-        cellRenderer={this.cellRenderer}
-        rowRenderer={this.rowRenderer}
-        extraWidth={'200vw'}
         extraHeight={'200vh'}
-        onSectionRendered={(linesDivision) => {}}
+        extraWidth={'200vw'}
+        gridHeaderRenderer={this.gridHeaderRenderer}
+        gridRoundingLength={5}
         hasHeader={true}
         headerHeight={20}
         headerWidth={30}
-        gridHeaderRenderer={this.gridHeaderRenderer}
-        rowHeaderRenderer={this.rowHeaderRenderer}
-        columnHeaderRenderer={this.columnHeaderRenderer}
         onClick={() => console.log('you clicked on Grid!')}
+        onSectionRendered={(linesDivision) => {}}
+        rowHeaderRenderer={this.rowHeaderRenderer}
+        rowRenderer={this.rowRenderer}
+        rowsNumber={this.rows.length}
+        rowsSizes={(i) => this.rows[i] ? this.rows[i].size : undefined}
+        screenHeight={this.state.screen.height}
+        screenWidth={this.state.screen.width}
+        scrollLeft={this.state.scroll.left}
+        scrollTop={this.state.scroll.top}
+        spacing={2}
       />
     );
   }
