@@ -1,15 +1,42 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import divideLinesByVisibility from './divideLinesByVisibility';
 
 const propTypes = {
-  // TODO: this.
+  cellRenderer: PropTypes.func.isRequired,
+  columnHeaderRenderer: PropTypes.func,
+  columnsNumber: PropTypes.number.isRequired,
+  columnsSizes: PropTypes.func.isRequired,
+  defaultCellHeight: PropTypes.number.isRequired,
+  defaultCellWidth: PropTypes.number.isRequired,
+  extraHeight: PropTypes.string,
+  extraWidth: PropTypes.string,
+  gridHeaderRenderer: PropTypes.func,
+  gridRoundingLength: PropTypes.number.isRequired,
+  hasHeader: PropTypes.bool,
+  headerHeight: PropTypes.number,
+  headerWidth: PropTypes.number,
+  onSectionRendered: PropTypes.func.isRequired,
+  rowHeaderRenderer: PropTypes.func,
+  rowRenderer: PropTypes.func.isRequired,
+  rowsNumber: PropTypes.number.isRequired,
+  rowsSizes: PropTypes.func.isRequired,
+  screenHeight: PropTypes.number.isRequired,
+  screenWidth: PropTypes.number.isRequired,
+  scrollLeft: PropTypes.number.isRequired,
+  scrollTop: PropTypes.number.isRequired,
 };
 
 const defaultProps = {
+  columnHeaderRenderer: () => {},
+  extraHeight: '0',
+  extraWidth: '0',
+  gridHeaderRenderer: () => {},
   hasHeader: false,
   headerHeight: 0,
   headerWidth: 0,
+  rowHeaderRenderer: () => {},
 };
 
 // TODO: check that defaultCellHeight, defaultCellWidth,
