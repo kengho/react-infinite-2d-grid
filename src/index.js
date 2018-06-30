@@ -42,28 +42,28 @@ class Grid extends Component {
 
   render() {
     const {
-      scrollTop,
-      scrollLeft,
-      screenHeight,
-      screenWidth,
+      cellRenderer,
+      columnHeaderRenderer,
+      columnsNumber,
+      columnsSizes,
       defaultCellHeight,
       defaultCellWidth,
-      gridRoundingLength,
-      cellRenderer,
-      rowRenderer,
-      extraWidth,
       extraHeight,
-      onSectionRendered, // extracting from otherProps, actually not using it in render()
+      extraWidth,
+      gridHeaderRenderer,
+      gridRoundingLength,
       hasHeader,
       headerHeight,
       headerWidth,
-      gridHeaderRenderer,
+      onSectionRendered, // extracting from otherProps, actually not using it in render()
       rowHeaderRenderer,
-      columnHeaderRenderer,
-      rowsSizes,
+      rowRenderer,
       rowsNumber,
-      columnsSizes,
-      columnsNumber,
+      rowsSizes,
+      screenHeight,
+      screenWidth,
+      scrollLeft,
+      scrollTop,
       ...otherProps,
     } = this.props;
 
@@ -125,7 +125,7 @@ class Grid extends Component {
       if (hasHeader) {
         rowHeaders.push(
           <div
-            key={`row-header-before`}
+            key="row-header-before"
             style={{
               width: headerWidth,
               height: rowsBeforeSize,
@@ -142,16 +142,16 @@ class Grid extends Component {
       renderingRowsWrapper.push(
         <div
           key="columns-before"
-          style={{ width: columnsBeforeSize }}
+          style={{ minWidth: columnsBeforeSize }}
         />
       );
 
       if (hasHeader) {
         columnHeaders.push(
           <div
-            key={`column-header-before`}
+            key="column-header-before"
             style={{
-              width: columnsBeforeSize,
+              minWidth: columnsBeforeSize,
               height: headerHeight,
             }}
           />
