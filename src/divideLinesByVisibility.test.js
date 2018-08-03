@@ -1,6 +1,9 @@
 import { expect } from 'chai';
 
-import divideLinesByVisibility, { sumRealLinesSizesRange } from './divideLinesByVisibility';
+import divideLinesByVisibility, {
+  sumRealLinesSizesRange,
+  getLineOffset,
+} from './divideLinesByVisibility';
 
 // For dev.
 const logThisCall = true;
@@ -478,5 +481,48 @@ describe('case 3 (only complementary lines are visible)', () => {
         },
       }, 'case []/32/12/3');
     });
+  });
+});
+
+describe('get line offset', () => {
+  it('should get line offset for real line (0)', () => {
+    expect(getLineOffset({
+      linesOffests,
+      index: 0,
+      defaultLineSize,
+      gapSize: 25,
+    })).to.equal(
+      0,
+      'get line offset 0'
+    );
+  });
+
+  it('should get line offset for real line (2)', () => {
+    expect(getLineOffset({
+      linesOffests,
+      index: 2,
+      defaultLineSize,
+      gapSize: 25,
+    })).to.equal(
+      /* index 2 line */
+      100 + 25 + 200 + 25,
+      'get line offset 2'
+    );
+  });
+
+  it('should get line offset for comp line', () => {
+    expect(getLineOffset({
+      linesOffests,
+      index: 12,
+      defaultLineSize,
+      gapSize: 25,
+    })).to.equal(
+      /* index 10 line */
+      100 + 25 + 200 + 25 + 150 + 25 + 50 + 25 + 100 + 25 + 200 + 25 + 200 + 25 + 200 + 25 + 150 + 25 + 100 + 25
+      /* plus two comp lines and gaps */
+
+      + 100 + 25 + 100 + 25,
+      'get line offset 12'
+    );
   });
 });

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import divideLinesByVisibility from './divideLinesByVisibility';
+import divideLinesByVisibility, { getLineOffset } from './divideLinesByVisibility';
 
 const propTypes = {
   cellRenderer: PropTypes.func.isRequired,
@@ -19,7 +19,6 @@ const propTypes = {
   headerWidth: PropTypes.number,
   onSectionRendered: PropTypes.func.isRequired,
   rowHeaderRenderer: PropTypes.func,
-  rowRenderer: PropTypes.func.isRequired,
   rowsNumber: PropTypes.number.isRequired,
   rowsSizes: PropTypes.func.isRequired,
   screenHeight: PropTypes.number.isRequired,
@@ -84,7 +83,6 @@ class Grid extends Component {
       headerWidth,
       onSectionRendered, // extracting from otherProps, actually not using it in render()
       rowHeaderRenderer,
-      rowRenderer,
       rowsNumber,
       rowsSizes,
       screenHeight,
@@ -249,10 +247,23 @@ class Grid extends Component {
         const realColumnIndex = unionColumnIndex;
         const compColumnIndex = unionColumnIndex - columnsNumber;
         const columnSize = columnsSizes(realColumnIndex) || defaultCellWidth;
+        const rowOffset = getLineOffset({
+          linesOffests: rowsOffsets,
+          index: realRowIndex,
+          defaultLineSize: defaultCellHeight,
+        });
+        const columnOffset = getLineOffset({
+          linesOffests: columnsOffsets,
+          index: realColumnIndex,
+          defaultLineSize: defaultCellWidth,
+        });
         const cellStyle = {
           // TODO: figure out, why minWidth doesn't required here.
           width: columnSize,
           height: rowSize,
+          position: 'absolute',
+          top: rowOffset + headerHeight,
+          left: columnOffset + headerWidth,
         };
         const cellIsOnTopRow = (unionRowIndex === rowsUnion.begin);
         const cellIsReal = (compRowIndex < 0 && compColumnIndex < 0);
@@ -281,19 +292,8 @@ class Grid extends Component {
       }
 
       const rowIsReal = (compRowIndex < 0);
-      const rowStyle = {
-        height: rowSize,
-        display: 'flex',
-        flexDirection: 'row',
-      };
-      const renderingRow = rowRenderer({
-        index: realRowIndex,
-        cells,
-        style: rowStyle,
-        isReal: rowIsReal,
-      });
 
-      renderingRows.push(renderingRow);
+      renderingRows.push(cells);
 
       if (hasHeader) {
         const rowHeader = rowHeaderRenderer({
@@ -452,3 +452,4 @@ Grid.propTypes = propTypes;
 Grid.defaultProps = defaultProps;
 
 export default Grid;
+export { getLineOffset } from './divideLinesByVisibility';

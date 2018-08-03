@@ -1,6 +1,6 @@
 {
   "name": "react-infinite-2d-grid",
-  "version": "1.0.5",
+  "version": "2.0.0",
   "description": "Infinite Grid React component",
   "main": "lib/index.js",
   "module": "es/index.js",

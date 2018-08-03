@@ -13,6 +13,24 @@
 // For dev.
 process.log = (x) => console.log(JSON.stringify(x, null, 2));
 
+export function getLineOffset({
+  linesOffests,
+  index,
+  defaultLineSize,
+  gapSize = 0,
+}) {
+  if (Number.isInteger(linesOffests[index])) {
+    return linesOffests[index];
+  } else {
+    const lastLineOffset = linesOffests[linesOffests.length - 1];
+
+    // NOTE: +1 because linesOffests.length == lines.length + 1
+    const compLinesNumber = index - linesOffests.length + 1;
+
+    return lastLineOffset + compLinesNumber * (defaultLineSize + gapSize);
+  }
+}
+
 export function sumRealLinesSizesRange({
   linesSizes,
   linesNumber,

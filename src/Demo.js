@@ -41,7 +41,6 @@ class Demo extends Component {
     }
 
     this.cellRenderer = this.cellRenderer.bind(this);
-    this.rowRenderer = this.rowRenderer.bind(this);
     this.gridHeaderRenderer = this.gridHeaderRenderer.bind(this);
     this.rowHeaderRenderer = this.rowHeaderRenderer.bind(this);
     this.columnHeaderRenderer = this.columnHeaderRenderer.bind(this);
@@ -97,15 +96,32 @@ class Demo extends Component {
     );
 
     const onScroll = (evt) => {
+      // NOTE: PERF: rows with flex css is the same as just a bunch of
+      //   absolutely positioned cells in terms of performance. Methodology:
+      //   * take StandardBenchmark from here:
+      //     https://ourcodeworld.com/articles/read/144/measuring-the-performance-of-a-function-with-javascript-using-browser-tools-or-creating-your-own-benchmark
+      //   *run 100 iterations of this.setState
+
+      // const b = StandardBenchmark(
+      // () =>
+      // console.time('onScroll');
       this.setState({
         scroll: {
           top: document.documentElement.scrollTop,
           left: document.documentElement.scrollLeft,
         },
-      });
+      })
+      // console.timeEnd('onScroll');
+      // ,100
+      // );
+      // console.log(b.averageMillisecondsPerTask);
     };
 
-    window.addEventListener('scroll', throttle(onScroll, scrollThrottleTimeout));
+    window.addEventListener('scroll', throttle(
+      onScroll,
+      scrollThrottleTimeout,
+      { leading: false }
+    ));
   }
 
   cellRenderer({
@@ -132,29 +148,6 @@ class Demo extends Component {
         style={style}
       >
         {childen}
-      </div>
-    );
-  }
-
-  rowRenderer({
-    index,
-    cells,
-    style,
-    isReal,
-  }) {
-    let key;
-    if (isReal) {
-      key = this.rows[index].key;
-    } else {
-      key = index;
-    }
-
-    return (
-      <div
-        key={key}
-        style={style}
-      >
-        {cells}
       </div>
     );
   }
@@ -220,7 +213,6 @@ class Demo extends Component {
         onClick={() => console.log('you clicked on Grid!')}
         onSectionRendered={(linesDivision) => {}}
         rowHeaderRenderer={this.rowHeaderRenderer}
-        rowRenderer={this.rowRenderer}
         rowsNumber={this.rows.length}
         rowsSizes={(i) => this.rows[i] ? this.rows[i].size : undefined}
         screenHeight={this.state.screen.height}
