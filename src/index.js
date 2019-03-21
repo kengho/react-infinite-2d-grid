@@ -139,49 +139,45 @@ class Grid extends Component {
     let columnHeaders = [];
 
     const rowsBeforeSize = sumAreaSizes([realRows.before, compRows.before]);
-    if (rowsBeforeSize > 0) {
-      grid.push(
+    grid.push(
+      <div
+        key="rows-before"
+        style={{ height: rowsBeforeSize }}
+      />
+    );
+
+    if (hasHeader) {
+      rowHeaders.push(
         <div
-          key="rows-before"
-          style={{ height: rowsBeforeSize }}
+          key="row-header-before"
+          style={{
+            width: headerWidth,
+            height: rowsBeforeSize,
+          }}
         />
       );
-
-      if (hasHeader) {
-        rowHeaders.push(
-          <div
-            key="row-header-before"
-            style={{
-              width: headerWidth,
-              height: rowsBeforeSize,
-            }}
-          />
-        );
-      }
     }
 
     const renderingRowsWrapper = [];
 
     const columnsBeforeSize = sumAreaSizes([realColumns.before, compColumns.before]);
-    if (columnsBeforeSize > 0) {
-      renderingRowsWrapper.push(
+    renderingRowsWrapper.push(
+      <div
+        key="columns-before"
+        style={{ minWidth: columnsBeforeSize }}
+      />
+    );
+
+    if (hasHeader) {
+      columnHeaders.push(
         <div
-          key="columns-before"
-          style={{ minWidth: columnsBeforeSize }}
+          key="column-header-before"
+          style={{
+            minWidth: columnsBeforeSize,
+            height: headerHeight,
+          }}
         />
       );
-
-      if (hasHeader) {
-        columnHeaders.push(
-          <div
-            key="column-header-before"
-            style={{
-              minWidth: columnsBeforeSize,
-              height: headerHeight,
-            }}
-          />
-        );
-      }
     }
 
     // 0        begin              compBegin
@@ -317,14 +313,12 @@ class Grid extends Component {
       </div>
     );
 
-    if (realColumns.after.size > 0) {
-      renderingRowsWrapper.push(
-        <div
-          key="columns-after"
-          style={{ minWidth: realColumns.after.size }}
-        />
-      );
-    }
+    renderingRowsWrapper.push(
+      <div
+        key="columns-after"
+        style={{ minWidth: realColumns.after.size }}
+      />
+    );
 
     grid.push(
       <div
@@ -338,14 +332,12 @@ class Grid extends Component {
       </div>
     );
 
-    if (realRows.after.size > 0) {
-      grid.push(
-        <div
-          key="rows-after"
-          style={{ height: realRows.after.size }}
-        />
-      );
-    }
+    grid.push(
+      <div
+        key="rows-after"
+        style={{ height: realRows.after.size }}
+      />
+    );
 
     const gridStyle = {};
     let gridHeader = '';
