@@ -326,15 +326,6 @@ class Grid extends Component {
       );
     }
 
-    if (extraWidth) {
-      renderingRowsWrapper.push(
-        <div
-          key="extra-columns-after"
-          style={{ minWidth: extraWidth }}
-        />
-      );
-    }
-
     grid.push(
       <div
         key="real-cells"
@@ -352,15 +343,6 @@ class Grid extends Component {
         <div
           key="rows-after"
           style={{ height: realRows.after.size }}
-        />
-      );
-    }
-
-    if (extraHeight) {
-      renderingRowsWrapper.push(
-        <div
-          key="extra-rows-after"
-          style={{ height: extraHeight }}
         />
       );
     }
@@ -390,7 +372,7 @@ class Grid extends Component {
             position: 'absolute',
             top: headerHeight,
             left: '0',
-            height: '0',
+            height: '0',  // required so headers won't occupy all space with hight z-index
             zIndex: '900',
             width: `${scrollLeft + screenWidth}px`, // so headers never reach bottom of the it's contaiver
           }}
@@ -417,7 +399,7 @@ class Grid extends Component {
             left: headerWidth,
             zIndex: '900',
             height: `${scrollTop + screenHeight}px`,
-            width: '0',
+            width: '0', // required so headers won't occupy all space with hight z-index
           }}
         >
           <div
@@ -434,15 +416,53 @@ class Grid extends Component {
       );
     }
 
+    const headersWrapper = (
+      <React.Fragment>
+        {gridHeader}
+        {rowHeadersWrapper}
+        {columnHeadersWrapper}
+      </React.Fragment>
+    );
+
+    const extraHeightWrapper = (
+      <div
+        style={{
+          position: 'absolute',
+          top: '0',
+          left: headerWidth,
+          zIndex: '0',
+          height: `calc(${scrollTop}px + ${screenHeight}px + ${extraHeight})`,
+          width: '1px', // "0px" don't work, if what and also scrollTop === 0 then extra space is tiny
+        }}
+      />
+    );
+    const extraWidthWrapper = (
+      <div
+        style={{
+          position: 'absolute',
+          top: headerHeight,
+          left: '0',
+          height: '0',
+          zIndex: '900',
+          width: `calc(${scrollLeft}px + ${screenWidth}px + ${extraWidth})`,
+        }}
+      />
+    );
+    const extraSpaceWrapper = (
+      <React.Fragment>
+        {extraHeightWrapper}
+        {extraWidthWrapper}
+      </React.Fragment>
+    );
+
     // REVIEW: there is no point of keeping absolute positioned
     //   headers in main div, but we lose otherProps we want
     //   to apply to them otherwise.
     return (
       <div {...otherProps} style={gridStyle}>
         {grid}
-        {gridHeader}
-        {rowHeadersWrapper}
-        {columnHeadersWrapper}
+        {headersWrapper}
+        {extraSpaceWrapper}
       </div>
     );
   }
