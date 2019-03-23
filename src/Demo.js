@@ -153,7 +153,7 @@ class Demo extends Component {
   }
 
   gridHeaderRenderer({ style }) {
-    return <div style={{ ...style, backgroundColor: 'green' }} />;
+    return <div key="grid-header" style={{ ...style, backgroundColor: 'green' }} />;
   }
 
   rowHeaderRenderer({

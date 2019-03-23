@@ -133,53 +133,6 @@ class Grid extends Component {
       }, 0);
     };
 
-    // See grid_map.ods.
-    const grid = [];
-    let rowHeaders = [];
-    let columnHeaders = [];
-
-    const rowsBeforeSize = sumAreaSizes([realRows.before, compRows.before]);
-    grid.push(
-      <div
-        key="rows-before"
-        style={{ height: rowsBeforeSize }}
-      />
-    );
-
-    if (hasHeader) {
-      rowHeaders.push(
-        <div
-          key="row-header-before"
-          style={{
-            width: headerWidth,
-            height: rowsBeforeSize,
-          }}
-        />
-      );
-    }
-
-    const renderingRowsWrapper = [];
-
-    const columnsBeforeSize = sumAreaSizes([realColumns.before, compColumns.before]);
-    renderingRowsWrapper.push(
-      <div
-        key="columns-before"
-        style={{ minWidth: columnsBeforeSize }}
-      />
-    );
-
-    if (hasHeader) {
-      columnHeaders.push(
-        <div
-          key="column-header-before"
-          style={{
-            minWidth: columnsBeforeSize,
-            height: headerHeight,
-          }}
-        />
-      );
-    }
-
     // 0        begin              compBegin
     // -----------|+++++++++++++++++++++|+++++++++|---------------
     // |              real              |          comp          |
@@ -221,7 +174,33 @@ class Grid extends Component {
       areas: columnsAreas,
     });
 
+    const rowsBeforeSize = sumAreaSizes([realRows.before, compRows.before]);
+    const columnsBeforeSize = sumAreaSizes([realColumns.before, compColumns.before]);
+
     const renderingRows = [];
+    const rowHeaders = [
+      ...(hasHeader ? [
+        <div
+          key="row-headers-before"
+          style={{
+            width: headerWidth,
+            height: rowsBeforeSize,
+          }}
+        />,
+      ] : []),
+    ];
+    const columnHeaders = [
+      ...(hasHeader ? [
+        <div
+          key="column-headers-before"
+          style={{
+            minWidth: columnsBeforeSize,
+            height: headerHeight,
+          }}
+        />,
+      ] : []),
+    ];
+
     for (
       let unionRowIndex = rowsUnion.begin;
       unionRowIndex < rowsUnion.begin + rowsUnion.length;
@@ -304,157 +283,82 @@ class Grid extends Component {
       }
     }
 
-    renderingRowsWrapper.push(
-      <div
-        key="cells"
-        style={{ tableLayout: 'fixed' }}
-      >
-        {renderingRows}
-      </div>
-    );
-
-    renderingRowsWrapper.push(
-      <div
-        key="columns-after"
-        style={{ minWidth: realColumns.after.size }}
-      />
-    );
-
-    grid.push(
-      <div
-        key="real-cells"
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-        }}
-      >
-        {renderingRowsWrapper}
-      </div>
-    );
-
-    grid.push(
-      <div
-        key="rows-after"
-        style={{ height: realRows.after.size }}
-      />
-    );
-
-    const gridStyle = {};
-    let gridHeader = '';
-    let rowHeadersWrapper = '';
-    let columnHeadersWrapper = '';
-    if (hasHeader) {
-      // Make space for headers.
-      gridStyle.margin = `${headerHeight}px 0 0 ${headerWidth}px`;
-
-      gridHeader = gridHeaderRenderer({
-        style: {
-          position: 'fixed',
-          top: '0',
-          left: '0',
-          zIndex: '1000',
-          height: `${headerHeight}px`,
-          width: `${headerWidth}px`,
-        },
-      });
-
-      rowHeadersWrapper = (
-        <div
-          style={{
-            position: 'absolute',
-            top: headerHeight,
-            left: '0',
-            height: '0',  // required so headers won't occupy all space with hight z-index
-            zIndex: '900',
-            width: `${scrollLeft + screenWidth}px`, // so headers never reach bottom of the it's contaiver
-          }}
-        >
-          <div
-            style={{
-              // display: 'flex', // not needed since divs stacks on top of each other naturally
-              // flexDirection: 'column',
-              position: 'sticky',
-              left: '0',
-              width: '0', // for div not to occupy entire screen blocking grid underneath
-            }}
-          >
-            {rowHeaders}
-          </div>
-        </div>
-      );
-
-      columnHeadersWrapper = (
-        <div
-          style={{
-            position: 'absolute',
-            top: '0',
-            left: headerWidth,
-            zIndex: '900',
-            height: `${scrollTop + screenHeight}px`,
-            width: '0', // required so headers won't occupy all space with hight z-index
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              position: 'sticky',
-              top: '0',
-            }}
-          >
-            {columnHeaders}
-          </div>
-        </div>
-      );
-    }
-
-    const headersWrapper = (
-      <React.Fragment>
-        {gridHeader}
-        {rowHeadersWrapper}
-        {columnHeadersWrapper}
-      </React.Fragment>
-    );
-
-    const extraHeightWrapper = (
-      <div
-        style={{
-          position: 'absolute',
-          top: '0',
-          left: headerWidth,
-          zIndex: '0',
-          height: `calc(${scrollTop}px + ${screenHeight}px + ${extraHeight})`,
-          width: '1px', // "0px" don't work, if what and also scrollTop === 0 then extra space is tiny
-        }}
-      />
-    );
-    const extraWidthWrapper = (
-      <div
-        style={{
-          position: 'absolute',
-          top: headerHeight,
-          left: '0',
-          height: '0',
-          zIndex: '900',
-          width: `calc(${scrollLeft}px + ${screenWidth}px + ${extraWidth})`,
-        }}
-      />
-    );
-    const extraSpaceWrapper = (
-      <React.Fragment>
-        {extraHeightWrapper}
-        {extraWidthWrapper}
-      </React.Fragment>
-    );
-
-    // REVIEW: there is no point of keeping absolute positioned
-    //   headers in main div, but we lose otherProps we want
-    //   to apply to them otherwise.
     return (
-      <div {...otherProps} style={gridStyle}>
-        {grid}
-        {headersWrapper}
-        {extraSpaceWrapper}
+      <div
+        style={hasHeader ? { 'margin': `${headerHeight}px 0 0 ${headerWidth}px`} : {}}
+        {...otherProps}
+      >
+        <div key="rows-before" style={{ height: rowsBeforeSize }} />
+        <div key="real-cells" style={{ display: 'flex', flexDirection: 'row' }} >
+          <div key="columns-before" style={{ minWidth: columnsBeforeSize }} />
+          <div key="cells" style={{ tableLayout: 'fixed' }} >
+            {renderingRows /* flat arrays of calls of cellRenderer(), absolutely positioned */}
+          </div>
+          <div key="columns-after" style={{ minWidth: realColumns.after.size }} />
+        </div>
+        <div key="rows-after" style={{ height: realRows.after.size }} />
+
+        {hasHeader &&
+          <React.Fragment>
+            {gridHeaderRenderer({
+              style: {
+                position: 'fixed', top: '0', left: '0', zIndex: '1000',
+                height: `${headerHeight}px`, width: `${headerWidth}px`,
+              },
+            })}
+            <div
+              key="row-headers"
+              style={{
+                position: 'absolute', top: headerHeight, left: '0', zIndex: '900',
+                height: '0',  // required so headers won't occupy all space with hight z-index
+                width: `${scrollLeft + screenWidth}px`, // so headers never reach bottom of the it's contaiver
+              }}
+            >
+              <div
+                style={{
+                  position: 'sticky', left: '0', width: '0',
+                  // width for div not to occupy entire screen blocking grid underneath
+                }}
+              >
+                {rowHeaders /* array of calls of rowHeaderRenderer() */}
+              </div>
+            </div>
+            <div
+              key="column-headers"
+              style={{
+                position: 'absolute', top: '0', left: headerWidth, zIndex: '900',
+                height: `${scrollTop + screenHeight}px`,
+                width: '0', // required so headers won't occupy all space with hight z-index
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex', flexDirection: 'row',
+                  position: 'sticky', top: '0',
+                }}
+              >
+                {columnHeaders /* array of calls of columnHeaderRenderer() */}
+              </div>
+            </div>
+          </React.Fragment>
+        }
+
+        <div
+          key="extra-width"
+          style={{
+            position: 'absolute', top: '0', left: '0', zIndex: '0',
+            height: `calc(${scrollTop}px + ${screenHeight}px + ${extraHeight})`,
+            width: '1px', // "0px" don't work, if what and also scrollTop === 0 then extra space is tiny
+          }}
+        />
+        <div
+          key="extra-height"
+          style={{
+            position: 'absolute', top: '0', left: '0',
+            height: '0',
+            width: `calc(${scrollLeft}px + ${screenWidth}px + ${extraWidth})`,
+          }}
+        />
       </div>
     );
   }
