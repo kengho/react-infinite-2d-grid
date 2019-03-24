@@ -38,9 +38,6 @@ const defaultProps = {
   rowHeaderRenderer: () => {},
 };
 
-// TODO: check that defaultCellHeight, defaultCellWidth,
-//   gridRoundingLength are numbers, not strings.
-
 // Table don't rerenders after non-scroll actions with PureComponent Grid.
 // class Grid extends React.PureComponent {
 class Grid extends Component {
@@ -79,8 +76,6 @@ class Grid extends Component {
       gridHeaderRenderer,
       gridRoundingLength,
       hasHeader,
-      headerHeight,
-      headerWidth,
       onSectionRendered, // extracting from otherProps, actually not using it in render()
       rowHeaderRenderer,
       rowsNumber,
@@ -89,8 +84,19 @@ class Grid extends Component {
       screenWidth,
       scrollLeft,
       scrollTop,
-      ...otherProps,
+      ...otherPropsNoConst,
     } = this.props;
+
+    let {
+      headerHeight,
+      headerWidth,
+      ...otherProps,
+    } = otherPropsNoConst;
+
+    if (!hasHeader) {
+      headerHeight = 0;
+      headerWidth = 0;
+    }
 
     this.currentLinesDivision.rows = divideLinesByVisibility({
       linesSizes: rowsSizes,
@@ -177,7 +183,7 @@ class Grid extends Component {
     const rowsBeforeSize = sumAreaSizes([realRows.before, compRows.before]);
     const columnsBeforeSize = sumAreaSizes([realColumns.before, compColumns.before]);
 
-    const renderingRows = [];
+    const cells = [];
     const rowHeaders = [
       ...(hasHeader ? [
         <div
@@ -212,7 +218,7 @@ class Grid extends Component {
 
       const rowSize = rowsSizes(realRowIndex) || defaultCellHeight;
 
-      const cells = [];
+      const row = [];
       for (
         let unionColumnIndex = columnsUnion.begin;
         unionColumnIndex < columnsUnion.begin + columnsUnion.length;
@@ -250,7 +256,7 @@ class Grid extends Component {
           isOnTopRow: cellIsOnTopRow,
         });
 
-        cells.push(cell);
+        row.push(cell);
 
         if (hasHeader && cellIsOnTopRow) {
           const columnHeader = columnHeaderRenderer({
@@ -268,7 +274,7 @@ class Grid extends Component {
 
       const rowIsReal = (compRowIndex < 0);
 
-      renderingRows.push(cells);
+      cells.push(row);
 
       if (hasHeader) {
         const rowHeader = rowHeaderRenderer({
@@ -292,7 +298,7 @@ class Grid extends Component {
         <div key="real-cells" style={{ display: 'flex', flexDirection: 'row' }} >
           <div key="columns-before" style={{ minWidth: columnsBeforeSize }} />
           <div key="cells" style={{ tableLayout: 'fixed' }} >
-            {renderingRows /* flat arrays of calls of cellRenderer(), absolutely positioned */}
+            {cells /* flat array of calls of cellRenderer(), absolutely positioned */}
           </div>
           <div key="columns-after" style={{ minWidth: realColumns.after.size }} />
         </div>
@@ -348,7 +354,7 @@ class Grid extends Component {
           style={{
             position: 'absolute', top: '0', left: '0', zIndex: '0',
             height: `calc(${scrollTop}px + ${screenHeight}px + ${extraHeight})`,
-            width: '1px', // "0px" don't work, if what and also scrollTop === 0 then extra space is tiny
+            width: '1px', // "0px" don't work, if that and also scrollTop === 0 then extra space is tiny
           }}
         />
         <div

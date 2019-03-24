@@ -17,6 +17,7 @@ class Demo extends Component {
         top: document.documentElement.scrollTop,
         left: document.documentElement.scrollLeft,
       },
+      hasHeader: true,
     };
 
     // Don't waste your time optimizing this code, it just works.
@@ -196,31 +197,43 @@ class Demo extends Component {
 
   render() {
     return (
-      <Grid
-        cellRenderer={this.cellRenderer}
-        columnHeaderRenderer={this.columnHeaderRenderer}
-        columnsNumber={this.columns.length}
-        columnsSizes={(i) => this.columns[i] ? this.columns[i].size : undefined}
-        defaultCellHeight={50}
-        defaultCellWidth={90}
-        extraHeight={'200vh'}
-        extraWidth={'200vw'}
-        gridHeaderRenderer={this.gridHeaderRenderer}
-        gridRoundingLength={5}
-        hasHeader={true}
-        headerHeight={20}
-        headerWidth={30}
-        onClick={() => console.log('you clicked on Grid!')}
-        onSectionRendered={(linesDivision) => {}}
-        rowHeaderRenderer={this.rowHeaderRenderer}
-        rowsNumber={this.rows.length}
-        rowsSizes={(i) => this.rows[i] ? this.rows[i].size : undefined}
-        screenHeight={this.state.screen.height}
-        screenWidth={this.state.screen.width}
-        scrollLeft={this.state.scroll.left}
-        scrollTop={this.state.scroll.top}
-        spacing={2}
-      />
+      <React.Fragment>
+        <Grid
+          cellRenderer={this.cellRenderer}
+          columnHeaderRenderer={this.columnHeaderRenderer}
+          columnsNumber={this.columns.length}
+          columnsSizes={(i) => this.columns[i] ? this.columns[i].size : undefined}
+          defaultCellHeight={50}
+          defaultCellWidth={90}
+          extraHeight={'200vh'}
+          extraWidth={'200vw'}
+          gridHeaderRenderer={this.gridHeaderRenderer}
+          gridRoundingLength={5}
+          hasHeader={this.state.hasHeader}
+          headerHeight={20}
+          headerWidth={30}
+          onClick={() => console.log('you clicked on Grid!')}
+          onSectionRendered={(linesDivision) => {}}
+          rowHeaderRenderer={this.rowHeaderRenderer}
+          rowsNumber={this.rows.length}
+          rowsSizes={(i) => this.rows[i] ? this.rows[i].size : undefined}
+          screenHeight={this.state.screen.height}
+          screenWidth={this.state.screen.width}
+          scrollLeft={this.state.scroll.left}
+          scrollTop={this.state.scroll.top}
+          spacing={2}
+        />
+        <div className="toggle-has-header">
+          <input
+            type="checkbox"
+            id="toggle-has-header"
+            label="Has header"
+            defaultChecked={this.state.hasHeader}
+            onChange={() => this.setState({ hasHeader: !this.state.hasHeader })}
+          />
+          <label htmlFor="toggle-has-header">Has header?</label>
+        </div>
+      </React.Fragment>
     );
   }
 }
