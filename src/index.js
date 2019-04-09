@@ -353,7 +353,7 @@ class Grid extends Component {
           key="extra-width"
           style={{
             position: 'absolute', top: '0', left: '0', zIndex: '0',
-            height: `calc(${scrollTop}px + ${screenHeight}px + ${extraHeight})`,
+            height: `calc(100vh + ${scrollTop}px + ${screenHeight}px + ${extraHeight})`,
             width: '1px', // "0px" don't work, if that and also scrollTop === 0 then extra space is tiny
           }}
         />
@@ -362,7 +362,7 @@ class Grid extends Component {
           style={{
             position: 'absolute', top: '0', left: '0',
             height: '0',
-            width: `calc(${scrollLeft}px + ${screenWidth}px + ${extraWidth})`,
+            width: `calc(100vw + ${scrollLeft}px + ${screenWidth}px + ${extraWidth})`,
           }}
         />
       </div>

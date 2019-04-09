@@ -205,8 +205,8 @@ class Demo extends Component {
           columnsSizes={(i) => this.columns[i] ? this.columns[i].size : undefined}
           defaultCellHeight={50}
           defaultCellWidth={90}
-          extraHeight={'200vh'}
-          extraWidth={'200vw'}
+          extraHeight={'100vh'}
+          extraWidth={'100vw'}
           gridHeaderRenderer={this.gridHeaderRenderer}
           gridRoundingLength={5}
           hasHeader={this.state.hasHeader}
