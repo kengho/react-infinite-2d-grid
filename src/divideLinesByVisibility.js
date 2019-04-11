@@ -245,7 +245,19 @@ export default function divideLinesByVisibility({
   //   (some of the combinations never occur IRL (TODO: prove it)).
 
   const overallOverflowSize = scrollSize + screenSize - sizeAccumulator;
-  const fullCompLinesLength = Math.floor((overallOverflowSize) / (defaultLineSize + gapSize));
+
+  // TODO: test.
+  // NOTE: error happens when there are really large lines and sizeAccumulator > scrollSize + screenSize.
+  //   Example lines' sizes:
+  //     this.columns[0].size = 270
+  //     this.columns[1].size = 1710
+  //     this.columns[2].size = 120
+  //     this.columns[3].size = 150
+  //     this.columns[4].size = 220
+  //     // also gridRoundingLength={3}
+  const effeciveOverallOverflowSize = overallOverflowSize > 0 ? overallOverflowSize : 0
+
+  const fullCompLinesLength = Math.floor((effeciveOverallOverflowSize) / (defaultLineSize + gapSize));
   const partialCompLinesLength = fullCompLinesLength + 1;
   if (realVisible.begin !== null) {
     if (realAfter.begin !== null) { // realBefore && realVisible && realAfter
